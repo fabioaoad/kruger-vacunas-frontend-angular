@@ -14,6 +14,9 @@ Password: 123456
 ## LINK EN HEROKU
 https://angular-nodejs-vacunacion.herokuapp.com/#/auth/login
 
+## LINK DOCUMENTACION POSTMAN
+https://documenter.getpostman.com/view/18645292/UyxbsqMT
+
 ## TECNOLOGIAS UTILIZADAS
 - Angular
 - Nodejs
