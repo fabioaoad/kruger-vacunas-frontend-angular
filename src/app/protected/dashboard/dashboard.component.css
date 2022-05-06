@@ -1,0 +1,7 @@
+.p-input-icon-left,
+.p-inputicon-right {
+  float: right;
+}
+span.p-input-icon-left input[type="text"]{
+  padding: 0px 25px;
+}

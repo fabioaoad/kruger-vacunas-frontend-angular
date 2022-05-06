@@ -1,0 +1,200 @@
+<h1>Dashboard</h1>
+
+<hr>
+<h2 *ngIf="usuario.rol === 'ADMIN_ROLE'">Administrador</h2>
+<h2 *ngIf="usuario.rol === 'EMPLEADO_ROLE'">Empleado</h2>
+<hr>
+<p>
+  Esta página sólo funciona si estás autenticado
+</p>
+
+<h4>User info</h4>
+<pre>{{ usuario | json }}</pre>
+
+
+
+<button class="botonLogout" pButton  (click)="logout()">
+  Logout
+</button>
+
+<ng-container class="dis-flex" *ngIf="usuario.rol === 'ADMIN_ROLE'">
+
+  <div class="col">
+
+
+
+
+
+    <p-table #vacunacionTable [value]="vacunas" responsiveLayout="scroll"
+             [globalFilterFields]="['usuario.nombre','usuario.apellido','usuario.estado_vacunacion','dosisNumero','vacunaTipo.vacunaNombre']">
+      <ng-template pTemplate="caption">
+        <div class="flex table-header">
+          Lista de Vacunación
+          <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+        <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Busqueda Global" />
+                </span>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="usuario.nombre">Nombre <p-sortIcon field="usuario.nombre"></p-sortIcon></th>
+          <th pSortableColumn="usuario.apellido">Apellido <p-sortIcon field="usuario.apellido"></p-sortIcon></th>
+          <th pSortableColumn="usuario.estado_vacunacion">estado Vacunacion <p-sortIcon field="usuario.estado_vacunacion"></p-sortIcon></th>
+          <th pSortableColumn="dosisNumero">Dosis <p-sortIcon field="dosisNumeron"></p-sortIcon></th>
+          <th pSortableColumn="vacunaTipo.vacunaNombre">tipo <p-sortIcon field="vacunaTipo.vacunaNombre"></p-sortIcon></th>
+          <th></th>
+
+        </tr>
+        <tr>
+          <th>
+            <input pInputText type="text" (input)="filtro($event, 'usuario.nombre', 'contains')"  placeholder="Search by nombre" class="p-column-filter">
+          </th>
+          <th>
+            <input pInputText type="text" (input)="filtro($event, 'usuario.apellido', 'contains')"  placeholder="Search by apellido" class="p-column-filter">
+          </th>
+          <th>
+            <input pInputText type="text" (input)="filtro($event, 'usuario.estado_vacunacion', 'contains')"  placeholder="Search by estado Vacunacion" class="p-column-filter">
+          </th>
+          <th>
+            <input pInputText type="text" (input)="filtro($event, 'dosisNumero', 'contains')" placeholder="Search by Dosis" class="p-column-filter">
+          </th>
+          <th>
+            <input pInputText type="text" (input)="filtro($event, 'vacunaTipo.vacunaNombre', 'contains')" placeholder="Search by Nombre Vacuna" class="p-column-filter">
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-vacuna>
+        <tr>
+          <td>{{vacuna.usuario.nombre}}</td>
+          <td>{{vacuna.usuario.apellido}}</td>
+          <td>{{vacuna.usuario.estado_vacunacion}}</td>
+          <td>{{vacuna.dosisNumero}}</td>
+          <td>{{vacuna.vacunaTipo.vacunaNombre}}</td>
+          <td>
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button>
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteVacuna(vacuna._id)"></button>
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>
+
+
+  <p-dialog [(visible)]="vacunaDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <div class="p-field">
+        <label for="name">Name</label>
+        <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
+        <small class="p-invalid" *ngIf="submitted && !product.name">Name is required.</small>
+      </div>
+      <div class="p-field">
+        <label for="description">Description</label>
+        <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
+      </div>
+
+      <div class="p-field">
+        <label class="p-mb-3">Category</label>
+        <div class="p-formgrid p-grid">
+          <div class="p-field-radiobutton p-col-6">
+            <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category"></p-radioButton>
+            <label for="category1">Accessories</label>
+          </div>
+          <div class="p-field-radiobutton p-col-6">
+            <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category"></p-radioButton>
+            <label for="category2">Clothing</label>
+          </div>
+          <div class="p-field-radiobutton p-col-6">
+            <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category"></p-radioButton>
+            <label for="category3">Electronics</label>
+          </div>
+          <div class="p-field-radiobutton p-col-6">
+            <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category"></p-radioButton>
+            <label for="category4">Fitness</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-formgrid p-grid">
+        <div class="p-field p-col">
+          <label for="price">Price</label>
+          <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+        </div>
+        <div class="p-field p-col">
+          <label for="quantity">Quantity</label>
+          <p-inputNumber id="quantity" [(ngModel)]="product.quantity"></p-inputNumber>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+    </ng-template>
+  </p-dialog>
+
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+</ng-container>
+
+
+
+
+<ng-container *ngIf="usuario.rol === 'ADMIN_ROLE'">
+  <div class="col">
+    <p-table #empleadoTable [value]="usuarioArray" responsiveLayout="scroll"
+             [globalFilterFields]="['nombre','apellido', 'correo','celular','estado_vacunacion']">
+      <ng-template pTemplate="caption">
+        <div class="flex table-header">
+          Lista de Empleados
+          <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+        <input pInputText type="text" (input)="applyFilterGlobalEmpleado($event, 'contains')" placeholder="Busqueda Global" />
+                </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+         <tr>
+          <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+          <th pSortableColumn="apellido">Apellido <p-sortIcon field="apellido"></p-sortIcon></th>
+          <th pSortableColumn="correo">Correo <p-sortIcon field="correo"></p-sortIcon></th>
+          <th pSortableColumn="celular">Celular <p-sortIcon field="celular"></p-sortIcon></th>
+          <th pSortableColumn="estado_vacunacion">Estado Vacunacion <p-sortIcon field="estado_vacunacion"></p-sortIcon></th>
+        <tr>
+          <th>
+            <input pInputText type="text" (input)="filtroEmpleado($event, 'nombre', 'contains')"  placeholder="Search by nombre" class="p-column-filter">
+          </th>
+          <th>
+            <input pInputText type="text" (input)="filtroEmpleado($event, 'apellido', 'contains')"  placeholder="Search by apellido" class="p-column-filter">
+          </th>
+        <th>
+          <input pInputText type="text" (input)="filtroEmpleado($event, 'correo', 'contains')"  placeholder="Search by correo" class="p-column-filter">
+        </th>
+        <th>
+          <input pInputText type="text" (input)="filtroEmpleado($event, 'celular', 'contains')"  placeholder="Search by celular" class="p-column-filter">
+        </th>
+        <th>
+          <input pInputText type="text" (input)="filtroEmpleado($event, 'estado_vacunacion', 'contains')"  placeholder="Search by estado Vac" class="p-column-filter">
+        </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-usuario>
+        <tr>
+          <td>{{usuario.nombre}}</td>
+          <td>{{usuario.apellido}}</td>
+          <td>{{usuario.correo}}</td>
+          <td>{{usuario.celular}}</td>
+          <td>{{usuario.estado_vacunacion}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+</ng-container>
+
+
